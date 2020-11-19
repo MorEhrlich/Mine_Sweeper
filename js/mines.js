@@ -51,5 +51,5 @@ function countNegs(mat, rowIdx, colIdx) {
         }
     }
     gBoard[rowIdx][colIdx].minesAroundCount = count
-    return count;
+    return (count === 0) ? EMPTY : count;
 }

@@ -4,7 +4,7 @@
 
 function startTimer() {
     gStartTime = Date.now();
-    gGameInterval = setInterval(timer, 30);
+    gGameInterval = setInterval(timer, 100);
 }
 
 function timer() {
@@ -20,5 +20,9 @@ function resetTimer() {
         clearTimeout(gGameInterval);
     }
     var timer = document.querySelector('.timer');
-    timer.innerText = 'Time : 00:00:00';
+    timer.innerText = 'Time : 00:00';
+}
+
+function stopTimer (){
+clearInterval(gGameInterval);
 }
