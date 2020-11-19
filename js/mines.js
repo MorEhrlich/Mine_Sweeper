@@ -53,3 +53,19 @@ function countNegs(mat, rowIdx, colIdx) {
     gBoard[rowIdx][colIdx].minesAroundCount = count
     return (count === 0) ? EMPTY : count;
 }
+
+
+function showAllMines() {
+    for (var i = 0; i < gLevel.size; i++) {
+        for (var j = 0; j < gLevel.size; j++) {
+            if (gBoard[i][j].isMine) {
+                gBoard[i][j].isShown = true;
+                var cellElement = document.querySelector(`.cell-${i}-${j}`);
+                if (gBoard[i][j].isMine) {
+                    cellElement.innerHTML = MINE;
+                    cellElement.style.backgroundColor = 'rgb(193, 192, 194)';
+                }
+            }
+        }
+    }
+}
