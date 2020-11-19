@@ -100,10 +100,10 @@ function whichButton(ev, elCell) {
         cellClicked(elCell);
     }
     if (ev.button === 2) {
+        cellMarked(elCell)
         window.addEventListener('contextmenu', function (elCell) {
             elCell.preventDefault();
         }, false);
-        cellMarked(elCell)
     }
 }
 
@@ -120,10 +120,10 @@ function cellClicked(elCell) {
     var i = +elCell.dataset.i
     var j = +elCell.dataset.j
 
+    if (gBoard[i][j].isMarked === true) {
+        return;
+    }
     if (gBoard[i][j]) {
-        if (gBoard[i][j].isMarked === true) {
-            return;
-        }
         gBoard[i][j].isShown = true;
         gGame.shownCount++
         if (gBoard[i][j].isMine === true) {
@@ -132,13 +132,14 @@ function cellClicked(elCell) {
             showAllMines();
             gameOver();
             return;
+        } else {
+            elCell.innerHTML = gBoard[i][j].minesAroundCount;
+            elCell.classList.remove('unpressed');
+            elCell.classList.add('pressed');
         }
-    } else {
-        elCell.innerHTML = gBoard[i][j].minesAroundCount;
-        elCell.classList.remove('unpressed');
-        elCell.classList.add('pressed');
     }
 }
+
 
 function showAllMines() {
     for (var i = 0; i < gLevel.size; i++) {
@@ -179,7 +180,6 @@ function cellMarked(elCell) {
             gGame.markedCount--;
         }
     }
-    checkGameOver()
 }
 
 
@@ -214,22 +214,22 @@ function playWinSound() {
     winSound.play();
 }
 
-function expandShown(board, i, j) {
-    var rowIdx = i
-    var colIdx = j
-    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
-        if (i < 0 || i >= board.length) continue
-        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
-            if (j < 0 || j >= board.length) continue
-            if (rowIdx === i && colIdx === j) continue
-            var currCell = board[i][j]
-            if (currCell.isShown || currCell.isMine || currCell.isMarked) continue
-            board[i][j].isShown = true;
-            gGame.shownCount++
-            renderBoard(gBoard)
-            if (currCell.minesAroundCount === 0) {
-                expandShown(board, i, j)
-            }
-        }
-    }
-}
+// function expandShown(board, i, j) {
+//     var rowIdx = i
+//     var colIdx = j
+//     for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+//         if (i < 0 || i >= board.length) continue
+//         for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+//             if (j < 0 || j >= board.length) continue
+//             if (rowIdx === i && colIdx === j) continue
+//             var currCell = board[i][j]
+//             if (currCell.isShown || currCell.isMine || currCell.isMarked) continue
+//             board[i][j].isShown = true;
+//             gGame.shownCount++
+//             renderBoard(gBoard)
+//             if (currCell.minesAroundCount === 0) {
+//                 expandShown(board, i, j)
+//             }
+//         }
+//     }
+// }
