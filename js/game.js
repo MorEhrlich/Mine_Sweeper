@@ -96,17 +96,10 @@ function renderBoard(board) {
 
 
 function whichButton(ev, elCell) {
-    var i = +elCell.dataset.i
-    var j = +elCell.dataset.j
-    var cell = gBoard[i][j];
     if (ev.button === 0) {
-        cell.isShown = true;
         cellClicked(elCell);
-    } else {
-        cell.isMarked === true
     }
     if (ev.button === 2) {
-        cell.isMarked = true;
         cellMarked(elCell)
         window.addEventListener('contextmenu', function (elCell) {
             elCell.preventDefault();
@@ -170,22 +163,21 @@ function cellMarked(elCell) {
         firstClick = false;
     }
     
-    // console.log(gGame.markedCount)
     var i = +elCell.dataset.i
     var j = +elCell.dataset.j
     if (gBoard[i][j]) {
         if (!gBoard[i][j].isShown && !gBoard[i][j].isMarked) {
             elCell.innerHTML = FLAG;
-            elCell.isMarked = true;
+            gBoard[i][j].isMarked = true;
             elCell.classList.add('marked');
             gGame.markedCount++;
         }
         else if (gBoard[i][j].isMarked) {
             elCell.innerHTML = EMPTY;
-            elCell.isMarked = false;
+            gBoard[i][j].isMarked = false;
             elCell.classList.remove('marked');
             gGame.markedCount--;
-            // console.log(gGame.markedCount)
+         
         }
     }
 }

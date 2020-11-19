@@ -3,7 +3,7 @@
 function addRandomMines() {
     var emptyCells = findEmptyCells();
     for (var i = 0; i < gLevel.mines; i++) {
-        var randomPlace = getRandomInt(0, emptyCells.length);
+        var randomPlace = getRandomInt(0, emptyCells.length - 1);
         var randCell = emptyCells[randomPlace]
         gBoard[randCell.i][randCell.j].isMine = true;
         emptyCells.splice(randomPlace, 1);
