@@ -100,10 +100,10 @@ function whichButton(ev, elCell) {
         cellClicked(elCell);
     }
     if (ev.button === 2) {
-        cellMarked(elCell)
         window.addEventListener('contextmenu', function (elCell) {
             elCell.preventDefault();
         }, false);
+        cellMarked(elCell)
     }
 }
 
@@ -119,9 +119,11 @@ function cellClicked(elCell) {
     }
     var i = +elCell.dataset.i
     var j = +elCell.dataset.j
-    elCell.classList.remove('unpressed');
-    elCell.classList.add('pressed');
+
     if (gBoard[i][j]) {
+        if (gBoard[i][j].isMarked === true) {
+            return;
+        }
         gBoard[i][j].isShown = true;
         gGame.shownCount++
         if (gBoard[i][j].isMine === true) {
@@ -131,11 +133,10 @@ function cellClicked(elCell) {
             gameOver();
             return;
         }
-        if (gBoard[i][j].isMarked === true) {
-            return;
-        } else {
-            elCell.innerHTML = gBoard[i][j].minesAroundCount;
-        }
+    } else {
+        elCell.innerHTML = gBoard[i][j].minesAroundCount;
+        elCell.classList.remove('unpressed');
+        elCell.classList.add('pressed');
     }
 }
 
@@ -162,7 +163,6 @@ function cellMarked(elCell) {
         startTimer()
         firstClick = false;
     }
-    
     var i = +elCell.dataset.i
     var j = +elCell.dataset.j
     if (gBoard[i][j]) {
@@ -177,14 +177,15 @@ function cellMarked(elCell) {
             gBoard[i][j].isMarked = false;
             elCell.classList.remove('marked');
             gGame.markedCount--;
-         
         }
     }
+    checkGameOver()
 }
 
 
 function checkGameOver() {
-    if (gGame.markedCount && gGame.shownCount === gGame.size * size) {
+    var numShown = (gLevel.size * size) - gLevel.mines;
+    if (gGame.markedCount === gLevel.mines && gGame.shownCount === numShown) {
         gGame.isOn = false;
         var elSmile = document.querySelector('.smile')
         elSmile.innerHTML = WIN;
@@ -211,4 +212,24 @@ function playLoseSound() {
 function playWinSound() {
     var winSound = new Audio('sound/win.wav');
     winSound.play();
+}
+
+function expandShown(board, i, j) {
+    var rowIdx = i
+    var colIdx = j
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        if (i < 0 || i >= board.length) continue
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (j < 0 || j >= board.length) continue
+            if (rowIdx === i && colIdx === j) continue
+            var currCell = board[i][j]
+            if (currCell.isShown || currCell.isMine || currCell.isMarked) continue
+            board[i][j].isShown = true;
+            gGame.shownCount++
+            renderBoard(gBoard)
+            if (currCell.minesAroundCount === 0) {
+                expandShown(board, i, j)
+            }
+        }
+    }
 }
