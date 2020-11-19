@@ -51,7 +51,7 @@ function countNegs(mat, rowIdx, colIdx) {
         }
     }
     gBoard[rowIdx][colIdx].minesAroundCount = count
-    return (count === 0) ? EMPTY : count;
+    return count;
 }
 
 
@@ -65,6 +65,30 @@ function showAllMines() {
                     cellElement.innerHTML = MINE;
                     cellElement.style.backgroundColor = 'rgb(193, 192, 194)';
                 }
+            }
+        }
+    }
+}
+
+
+function expandShown(board,i, j) {
+    var rowIdx = i;
+    var colIdx = j;
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        if (i < 0 || i >= board.length) continue
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (j < 0 || j >= board.length) continue
+            if (rowIdx === i && colIdx === j) continue
+            var currCell = board[i][j]
+            if (currCell.isShown || currCell.isMine || currCell.isMarked) continue
+            board[i][j].isShown = true;
+            var elNegCell = document.querySelector(`.cell-${i}-${j}`)
+            elNegCell.classList.replace('unpressed', 'pressed');
+            gGame.shownCount++
+            if (currCell.minesAroundCount === 0) {
+                expandShown(board,i, j)
+            } else {
+                elNegCell.innerHTML = currCell.minesAroundCount;
             }
         }
     }

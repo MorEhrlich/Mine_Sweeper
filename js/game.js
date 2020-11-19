@@ -33,14 +33,14 @@ function init() {
 
 function play() {
     gBoard = buildBoard();
-    addRandomMines(gBoard)
+    addRandomMines(gBoard);
     setMinesNegsCount(gBoard)
     renderBoard(gBoard);
     resetTimer();
     firstClick = true;
     gGame.shownCount = 0;
     gGame.markedCount = 0
-    gLiveCount = 3;
+    gLifeCount = 3;
 }
 
 
@@ -86,8 +86,7 @@ function renderBoard(board) {
     for (var i = 0; i < board.length; i++) {
         strHtml += '<tr>'
         for (var j = 0; j < board[0].length; j++) {
-            strHtml += `<td class="unpressed cell-${i}-${j}" data-i="${i}" data-j="${j}"
-              onmousedown="whichButton(event, this)"></td>`
+            strHtml += `<td class="unpressed cell-${i}-${j}" data-i="${i}" data-j="${j}" onmousedown="whichButton(event, this)"></td>`
         }
         strHtml += '</tr>'
     }
@@ -116,6 +115,7 @@ function cellClicked(elCell) {
     if (firstClick) {
         startTimer()
         firstClick = false;
+     
     }
     var i = +elCell.dataset.i
     var j = +elCell.dataset.j
@@ -133,11 +133,17 @@ function cellClicked(elCell) {
             gameOver();
             return;
         } else {
-            elCell.innerHTML = gBoard[i][j].minesAroundCount;
+            var mineAroundNumber = gBoard[i][j].minesAroundCount;
+            if (mineAroundNumber === 0) {
+                elCell.innerHTML = '';
+            } else {
+                elCell.innerHTML = mineAroundNumber;
+            }
+            
             elCell.classList.remove('unpressed');
             elCell.classList.add('pressed');
-            if (elCell.innerHTML === EMPTY) {
-                expandShown(gBoard, gBoard[i], gBoard[j])
+            if (mineAroundNumber === 0){
+                expandShown(gBoard, i, j)
             }
         }
     }
@@ -148,6 +154,7 @@ function cellClicked(elCell) {
         playWinSound()
         stopTimer()
     }
+ 
     console.log(gGame.shownCount);
 }
 
